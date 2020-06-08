@@ -1,3 +1,4 @@
+#include <memory>
 #include "Argument_helper.h"
 #include "dnn.h"
 #include "haar.h"
@@ -24,16 +25,16 @@ int main(int argc, char *argv[]) {
 
   Detector *detector;
   if (model == "haar") {
-    detector = new HaarDetector(imgFile, videoFile);
-    detector->init(haarXmlPath);
-    detector->imgDetect();
-    detector->videoDetect();
+    std::unique_ptr<Detector> detectorPtr(new HaarDetector(imgFile, videoFile));
+    detectorPtr->init(haarXmlPath);
+    detectorPtr->imgDetect();
+    detectorPtr->videoDetect();
   } else if (model == "dnn") {
-    detector = new DnnDetector(imgFile, videoFile);
-    detector->init(dnnModelConfig, dnnModelBinary);
-    detector->imgDetect();
-    detector->videoDetect();
+    std::unique_ptr<Detector> detectorPtr( new DnnDetector(imgFile, videoFile));
+    detectorPtr->init(dnnModelConfig, dnnModelBinary);
+    detectorPtr->imgDetect();
+    detectorPtr->videoDetect();
   }
-  delete detector;
+
   return 0;
 }
